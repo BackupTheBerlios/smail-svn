@@ -51,6 +51,7 @@ require_once 'SmailSmarty.php';
 require_once 'AccountManager.php';
 
 define( 'HTTP_SERVER', 'http://smail-test.webomotion.de');
+require_once 'WEBDIR.php';
 
 $params = array();
 
