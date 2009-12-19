@@ -12,12 +12,12 @@ abstract class Manager {
     const NO_ACTION =
         'Aktion konnte nicht ausgef�hrt werden.';
 
-    public function __construct($action, array $param) {
+    public function __construct($action, array $params) {
         if(method_exists($this, $action)) {
             $this->$action($param);
         }
         else {
-            $this->setError(self::NO_ACTION);
+            $this->__default($params);
         }
     }
 

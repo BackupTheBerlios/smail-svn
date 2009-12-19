@@ -23,6 +23,7 @@ if (!MySQLiFactory::configIsReadable()) {
 	 //exit;
 }
 
+/*
 if (sizeof($_GET) == 0) {
 	readfile('start.html');
 	exit;
@@ -43,4 +44,28 @@ if (isset($_GET['group'])) {
 	}
 	exit;
 }
+
+*/
+
+require_once 'SmailSmarty.php';
+require_once 'AccountManager.php';
+
+define( 'HTTP_SERVER', 'http://smail-test.webomotion.de');
+
+$params = array();
+
+foreach($_GET as $key => $value) {
+    $params[$key] = $value;
+}
+
+foreach($_POST as $key => $value) {
+    $params[$key] = $value;
+}
+
+
+new AccountManager($action, $params);
+
+
+$smarty = SmailSmarty::getInstance();
+echo $smarty->render();
 ?>

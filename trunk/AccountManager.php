@@ -3,6 +3,7 @@
 require_once 'Account.php';
 require_once 'Manager.php';
 
+
 class AccountManager extends Manager {
     /*
      * TODO: Kriegen wir die Texte noch ins Template rein?
@@ -13,8 +14,16 @@ class AccountManager extends Manager {
 
     const ACCOUNT_NOT_EXIST =
         'Benutzername und/oder Password sind falsch.';
-
-    private function create(array $param) {
+    
+    protected function __default(array $params) {
+        $smarty = SmailSmarty::getInstance();
+        
+        $smarty->setTemplate('login.tpl');
+        $smarty->assign('Login', HTTP_SERVER.'/Anmeldung');
+        $smarty->assign('newAccount', HTTP_SERVER.'/Neues_Benutzerkonto');
+    }
+    
+    protected function create(array $params) {
         if(!(isset($param['account']) && isset($param['password']))) {
             $this->setError(self::NO_ACTION);
         }
@@ -34,7 +43,7 @@ class AccountManager extends Manager {
         $this->render();
     }
 
-    private function login(array $param) {
+    protected function login(array $param) {
         if(!(isset($param['account']) && isset($param['password']))) {
             $this->setError(self::NO_ACTION);
         }
@@ -54,7 +63,7 @@ class AccountManager extends Manager {
         $this->render();
     }
 
-    private function logout(array $param) {
+    protected function logout(array $param) {
         //session_destroy();
         //unset($_SESSION);
     }
