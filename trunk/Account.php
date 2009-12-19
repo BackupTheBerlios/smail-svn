@@ -10,10 +10,9 @@ class Account {
     private $password;
     private $exists = false;
 
-    private function __construct($name, $password) {
+    public function __construct($name, $password) {
         $this->name = $name;
-        $this->password = $name;
-
+        $this->password = $password;
     }
 
     /*
@@ -52,7 +51,7 @@ class Account {
       *
       * @return boolean
     */
-    private function checkForExist() {
+    public function exists() {
         $sql = '
             SELECT COUNT(*)
             FROM account
@@ -77,13 +76,13 @@ class Account {
         $sql = '
             INSERT INTO account
             (id, password)
-            VALUES ("'.$name.'", SHA1("'.$password.'"))';
+            VALUES ("'.$this->name.'", SHA1("'.$this->password.'"))';
         
         if(!$this->exists() && !$this->existsName()) {
             return mysql_query($sql);
         }
         elseif($this->existsName()) {
-            // Fehler: Name existiert bereits!
+            exit('Name existiert bereits!');
         }
         else {
             return false;

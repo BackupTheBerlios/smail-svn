@@ -18,10 +18,9 @@ if (!MySQLiFactory::configIsReadable()) {
 	 && isset($_POST['passwd']) 
 	 && isset($_POST['dbname'])) {
 	 	$setup->save($_POST['host'], $_POST['user'], $_POST['passwd'], $_POST['dbname']);
-	 	header('Location: ./');
 	 }
 	 echo $setup->output();
-	 exit;
+	 //exit;
 }
 
 /*
@@ -51,6 +50,11 @@ if (isset($_GET['group'])) {
 require_once 'SmailSmarty.php';
 require_once 'AccountManager.php';
 
+$link = mysql_connect('localhost', 'smail', 'smail');
+mysql_query('USE smail');
+
+session_start();
+
 define('HTTP_SERVER', 'http://'.$_SERVER['SERVER_NAME']);
 require_once 'WEBDIR.php';
 
@@ -64,8 +68,28 @@ foreach($_POST as $key => $value) {
     $params[$key] = $value;
 }
 
+//var_dump($params);
 
-new AccountManager($action, $params);
+switch($params['url']) {
+    case 'Login':
+        new AccountManager('login', $params);
+        break;
+    case 'Logout':
+        new AccountManager('logout', $params);
+        break;
+    case 'Profil':
+        new AccountManager('access', $params);
+        break;
+    case 'Register':
+        new AccountManager('create', $params);
+        break;
+    case 'Welcome':
+        new AccountManager('welcome', $params);
+        break;
+    default:
+        new AccountManager('', $params);
+}
+
 
 
 $smarty = SmailSmarty::getInstance();

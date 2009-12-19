@@ -5,9 +5,10 @@
     <head>
         <title>Welcome to Smail</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <link rel="stylesheet" type="text/css" href="global.css" />
+        <link rel="stylesheet" type="text/css" href="./css/global.css" />
     </head>
     <body>
+        {if $logout}<div class="notice">Du wurdest erfolgreich ausgeloggt!</div>{/if}
         <h1>Smail</h1>
         <p>Willkommen!</p>
         
@@ -15,9 +16,9 @@
             <h2>Anmeldung:</h2>
             
             <ul class="error">
-                {foreach from=$LOGIN_ERRORS item=error}
-                    <li>{$error}</li>
-                {/foreach}
+                {if $LOGIN_ERRORS==1}
+                    <li>Benutzername und/oder Password sind falsch.</li>
+                {/if}
             </ul>
             
             <label>Benutzername:</label>
@@ -33,9 +34,13 @@
             <h2>Neues Benutzerkonto:</h2>
             
             <ul class="error">
-                {foreach from=$NEW_ERRORS item=error}
-                    <li>{$error}</li>
-                {/foreach}
+                {if $CREATE_ERRORS==1}
+                    <li>Angaben sind unvollständig.</li>
+                {elseif $CREATE_ERRORS==2}
+                    <li>Passwort und Bestätigung stimmen nicht überein.</li>
+                {elseif $CREATE_ERRORS==3}
+                    <li>Der Benutzername ist bereits vergeben.</li>
+                {/if}
             </ul>
             
             <label>Benutzername:</label>

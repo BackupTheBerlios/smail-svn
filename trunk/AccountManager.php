@@ -5,66 +5,93 @@ require_once 'Manager.php';
 
 
 class AccountManager extends Manager {
-    /*
-     * TODO: Kriegen wir die Texte noch ins Template rein?
-     * - Ja, Texte werden der Smarty-Klasse als Variablen übergeben.
-     */
-    const ACCOUNT_EXISTS =
-        'Der Benutzername ist bereits vergeben.';
 
-    const ACCOUNT_NOT_EXIST =
-        'Benutzername und/oder Password sind falsch.';
-    
     protected function __default(array $params) {
+        if(isset($_SESSION['account']))
+            header('Location: '.HTTP_SERVER.'/Profil');
+        
         $smarty = SmailSmarty::getInstance();
         
         $smarty->setTemplate('login.tpl');
-        $smarty->assign('Login', HTTP_SERVER.'/Anmeldung');
-        $smarty->assign('newAccount', HTTP_SERVER.'/Neues_Benutzerkonto');
+        $smarty->assign('Login', HTTP_SERVER.'/Login');
+        $smarty->assign('newAccount', HTTP_SERVER.'/Register');
     }
     
     protected function create(array $params) {
-        if(!(isset($param['account']) && isset($param['password']))) {
-            $this->setError(self::NO_ACTION);
+        $smarty = SmailSmarty::getInstance();
+        $smarty->setTemplate('login.tpl');
+        
+        if(!(isset($params['name']) && isset($params['password']) && isset($params['confirm']))) {
+            $smarty->assign('CREATE_ERRORS', 1);
+        }
+        elseif($params['password']!=$params['confirm']) {
+            $smarty->assign('CREATE_ERRORS', 2);
         }
         else {
-            $account = new Account($param['account'], $param['password']);
+            $account = new Account($params['name'], $params['password']);
 
-            if(!$account->exist()) {
-                $account->create();
-                //$_SESSION['account'] = $account->getName();
-
-                //header('Location: '.DOMAIN.'Login/');
+            if(!$account->exists()) {
+                if($account->create()) {
+                    $_SESSION['account'] = $account->getName();
+                    header('Location: '.HTTP_SERVER.'/Profil');
+                }
             } else {
-                $this->setError(self::ACCOUNT_EXISTS);
+                $smarty->setTemplate('login.tpl');
+                $smarty->assign('CREATE_ERRORS', 3);
             }
         }
-
-        $this->render();
     }
 
-    protected function login(array $param) {
-        if(!(isset($param['account']) && isset($param['password']))) {
-            $this->setError(self::NO_ACTION);
+    protected function login(array $params) {
+        $this->__default($params);
+        
+        $smarty = SmailSmarty::getInstance();
+        
+        if(!(isset($params['name']) && isset($params['password']))) {
+            $smarty->assign('LOGIN_ERRORS', 1);
         }
         else {
-            $account = new Account($param['account'], $param['password']);
-
-            if($account->exist()) {
-                $account->create($param['password']);
-                //$_SESSION['account'] = $account->getName();
-
-                //header('Location: '.DOMAIN.'Account/');
+            $account = new Account($params['name'], $params['password']);
+            
+            if($account->exists()) {
+                $_SESSION['account'] = $account->getName();
+                header('Location: '.HTTP_SERVER.'/Profil');
             } else {
-                $this->setError(self::ACCOUNT_NOT_EXISTS);
+                $smarty->assign('LOGIN_ERRORS', 1);
             }
         }
-
-        $this->render();
     }
-
-    protected function logout(array $param) {
-        //session_destroy();
-        //unset($_SESSION);
+    
+    protected function welcome(array $params) {
+        $this->access($params);
+        
+        $smarty = SmailSmarty::getInstance();
+        
+        $smarty->assign('new', 1);
+    }
+    
+    protected function access(array $params) {
+        if(!isset($_SESSION['account']))
+            $this->logout($params);
+        
+        $smarty = SmailSmarty::getInstance();
+        
+        $smarty->setTemplate('profil.tpl');
+        $smarty->assign('user', $_SESSION['account']);
+    }
+    
+    protected function logout(array $params) {
+        if(!isset($_SESSION['account']))
+            header('Location: '.HTTP_SERVER);
+        
+        session_destroy();
+        unset($_SESSION);
+        
+        $smarty = SmailSmarty::getInstance();
+        
+        $smarty->setTemplate('login.tpl');
+        $smarty->assign('Login', HTTP_SERVER.'/Login');
+        $smarty->assign('newAccount', HTTP_SERVER.'/Register');
+        $smarty->assign('logout', 1);
     }
 } ?>

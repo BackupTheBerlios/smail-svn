@@ -14,7 +14,7 @@ abstract class Manager {
 
     public function __construct($action, array $params) {
         if(method_exists($this, $action)) {
-            $this->$action($param);
+            $this->$action($params);
         }
         else {
             $this->__default($params);
