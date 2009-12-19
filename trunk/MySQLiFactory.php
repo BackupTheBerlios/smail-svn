@@ -26,7 +26,7 @@ class MySQLiFactory {
 		if ($instance == null) {
 			self::createInstance();
 		}
-		return $this->instance;
+		return self::$INSTANCE;
 	}
 	
 	private static function createInstance() {
@@ -34,7 +34,46 @@ class MySQLiFactory {
 			die('MySQL configuration file is not readable.' . "\n");
 		}
 		include self::$CONFIG_FILE;
-		self::$INSTANCE = new mysqli($host, $user, $passwd, $dbname);
+		try {
+			self::$INSTANCE = new mysqli($host, $user, $passwd);
+		} catch (Exception $ex) {
+			die('Sorry, could not connect to database.');
+		}
+		if (!self::$INSTANCE->select_db($dbname)) {
+			self::createDatabase($dbname);
+		}
+	}
+	
+	private static function createDatabase($dbname) {
+		echo 'hallo';
+		$db = self::$INSTANCE;
+		$db->query('create database `' . $dbname . '`;')
+		 or die('Could not create database.');
+		$db->select_db($dbname);
+		$query 
+		= 'CREATE TABLE `account` ('
+		. '  `id` varchar(25) NOT NULL default "",'
+		. '  `password` varchar(40) default NULL,'
+		. '  PRIMARY KEY  (`id`)'
+		. ') ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+		$db->query($query);
+		$query
+		= 'CREATE TABLE `group` ('
+		. '  `id` varchar(25) NOT NULL default "",'
+		. '  `readInvs` tinyint(3) unsigned NOT NULL default "0",'
+		. '  `writeInvs` tinyint(3) unsigned NOT NULL default "0",'
+		. '  `description` varchar(255) default NULL,'
+		. '  PRIMARY KEY  (`id`)'
+		. ') ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+		$db->query($query);
+		$query
+		= 'CREATE TABLE `membership` ('
+		. '  `group` varchar(25) NOT NULL default "",'
+		. '  `account` varchar(25) NOT NULL default "",'
+		. '  `level` char(1) NOT NULL default "r",'
+		. '  PRIMARY KEY  (`group`,`account`)'
+		. ') ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+		$db->query($query);
 	}
 
 }

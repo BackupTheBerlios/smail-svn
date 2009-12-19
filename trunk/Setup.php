@@ -14,7 +14,10 @@ class Setup {
 	
 	public function save($host, $user, $passwd, $dbname) {
 			$fp = fopen('mysql.php','w');
-			$filedata = '<?php $host = \''.$host.'\'; $user = \''.$user.'\'; $passwd = \''.$passwd.'\'; $dbname = \''.$dbname.'\'; ?>';
+			$filedata = '<?php $host = \'' . $host
+			. '\'; $user = \'' . $user
+			. '\'; $passwd = \'' . $passwd
+			. '\'; $dbname = \''.$dbname.'\'; ?>' . "\n";
 			fwrite($fp, $filedata, strlen($filedata));
 			fclose($fp);
 			chmod('mysql.php',0400);
