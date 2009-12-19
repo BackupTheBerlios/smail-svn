@@ -18,9 +18,10 @@ if (!MySQLiFactory::configIsReadable()) {
 	 && isset($_POST['passwd']) 
 	 && isset($_POST['dbname'])) {
 	 	$setup->save($_POST['host'], $_POST['user'], $_POST['passwd'], $_POST['dbname']);
+	 	header('Location: ./');
 	 }
 	 echo $setup->output();
-	 //exit;
+	 exit;
 }
 
 /*
