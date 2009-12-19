@@ -6,6 +6,7 @@ require_once 'Manager.php';
 class AccountManager extends Manager {
     /*
      * TODO: Kriegen wir die Texte noch ins Template rein?
+     * - Ja, Texte werden der Smarty-Klasse als Variablen übergeben.
      */
     const ACCOUNT_EXISTS =
         'Der Benutzername ist bereits vergeben.';

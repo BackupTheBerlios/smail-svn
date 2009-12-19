@@ -37,6 +37,9 @@ abstract class Manager {
         //$smarty->display($tpl);
     }
 
+    public function fire() {
+    }
+
     protected function setError($error) {
         $this->error[] = $error;
     }

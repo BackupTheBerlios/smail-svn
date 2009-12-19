@@ -14,11 +14,23 @@ class Account {
         $this->name = $name;
         $this->password = $name;
 
-        $this->checkForExist();
     }
 
     /*
      * TODO:
+     * Noch mal zum Konzept wie ich es verstanden habe:
+     * 1. Problem: Eine Instanz hat immer einen entsprechenden Datensatz.
+     * Um Instanz und Datensatz zu synchronisieren sind verschiedene
+     * Funktionen notwendig.
+     * 2. Lösung: Wird eine neue Instanz erstellt, wird im Konstruktor
+     * geprüft, ob sie bereits existiert. Dies wird von checkForExist() erledigt.
+     * Das Ergebnis wird in der Eigenschaft $exists gespeichert. Der
+     * Account Manager kann jetzt abfragen, ob der Eintrag existiert.
+     * Ist dies nicht der Fall, kann mit dem Aufruf create() der Datensatz
+     * erzeugt werden. Außerdem kann der Konstruktor ggf. weitere Informationen
+     * nach laden, wenn der Datensatz existiert.
+     *
+     *
      * Name nicht ganz korrekt: Prüft nicht, ob ein bestimmter Name schon
      * vergeben ist, sondern ob die Name-Passwort-Kombination existiert.
      * Passender Name vielleicht: validate
@@ -33,6 +45,13 @@ class Account {
      * Prüfung, ob ein Name vergeben ist, um dies per Javascript direkt im
      * Formular anzeigen zu können.
      */
+    
+    /**
+      * Prueft, ob die Instanz bereits durch einen Datensatz repraesentiert
+      * wird.
+      *
+      * @return boolean
+    */
     private function checkForExist() {
         $sql = '
             SELECT COUNT(*)
@@ -47,22 +66,47 @@ class Account {
             return $this->exists = false;
         }
     }
-
+    
+    /**
+      * Erstellt einen Datensatz, der die Instanz repraesentiert. Gibt bei
+      * Erfolg true, andernfalls false zurueck.
+      *
+      * @return boolean
+    */
     public function create() {
         $sql = '
             INSERT INTO account
             (id, password)
             VALUES ("'.$name.'", SHA1("'.$password.'"))';
-
-        if(!$this->exists()) {
+        
+        if(!$this->exists() && !$this->existsName()) {
             return mysql_query($sql);
+        }
+        elseif($this->existsName()) {
+            // Fehler: Name existiert bereits!
         }
         else {
             return false;
         }
     }
-
-
+    
+    /**
+      * Prüft, ob der Account-Name bereits existiert.
+      *
+      * @return boolean
+    */
+    protected function existsName() {
+        $sql = 'SELECT COUNT(*) FROM account WHERE id="'.$this->name.'"';
+        
+        return (bool) mysql_result(mysql_query($sql), 0, 0);
+    }
+    
+    /**
+      * Loescht den Datensatz der Instanz aus der Datenbank, sofern er
+      * existiert. Gibt bei Erfolg true, andernfalls false zurueck.
+      *
+      * @return boolean
+    */
     public function delete() {
         $sql = '
             DELETE FROM account WHERE id="'.$this->name.'"
@@ -75,7 +119,12 @@ class Account {
             return false;
         }
     }
-
+    
+    /**
+      * Gibt den Namen des Accounts zurueck.
+      *
+      * @return string
+    */
     public function getName() {
         return $this->name;
     }
