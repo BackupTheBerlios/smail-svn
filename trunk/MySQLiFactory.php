@@ -7,10 +7,17 @@
  */
 class MySQLiFactory {
 	
-	private static $CONFIG_FILE = 'mysql.php';
+	public static $CONFIG_FILE = 'mysql.php';
 	
 	private static $INSTANCE = null;
 	
+	public static function configIsReadable() {
+		if (!is_file(self::$CONFIG_FILE)) {
+			return false;
+		}
+		return is_readable(self::$CONFIG_FILE);
+	}
+
 	/**
 	 * Returns the one and only instance or dies.
 	 * @return mysqli instance
@@ -23,11 +30,8 @@ class MySQLiFactory {
 	}
 	
 	private static function createInstance() {
-		if (!is_readable(self::$CONFIG_FILE)) {
+		if (!self::configIsReadable()) {
 			die('MySQL configuration file is not readable.' . "\n");
-		}
-		if (!is_file(self::$CONFIG_FILE)) {
-			die('MySQL configuration file is no file.' . "\n");
 		}
 		include self::$CONFIG_FILE;
 		self::$INSTANCE = new mysqli($host, $user, $passwd, $dbname);
