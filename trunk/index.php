@@ -50,7 +50,7 @@ if (isset($_GET['group'])) {
 require_once 'SmailSmarty.php';
 require_once 'AccountManager.php';
 
-define( 'HTTP_SERVER', 'http://smail-test.webomotion.de');
+define('HTTP_SERVER', 'http://'.$_SERVER['SERVER_NAME']);
 require_once 'WEBDIR.php';
 
 $params = array();
