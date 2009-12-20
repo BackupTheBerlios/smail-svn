@@ -20,7 +20,7 @@ if (!MySQLiFactory::configIsReadable()) {
 	 	$setup->save($_POST['host'], $_POST['user'], $_POST['passwd'], $_POST['dbname']);
 	 }
 	 echo $setup->output();
-	 //exit;
+	 exit;
 }
 
 /*
