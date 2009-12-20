@@ -1,3 +1,9 @@
 RewriteEngine on
-RewriteRule ^(Welcome/)$ index.php?manager=Account
+RewriteRule ^Welcome/$			?manager=Account
+RewriteRule ^Login$				?manager=Account
+RewriteRule ^Login/$			?manager=Account
+RewriteRule ^Groups/$			?manager=Account
+RewriteRule ^Group/$			?manager=Group
+RewriteRule ^Group/([^/]+)/$	?manager=Group&id=$1
+
 

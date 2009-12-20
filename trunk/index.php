@@ -5,56 +5,38 @@
  * Processes the input and deligates all requests.
  */
 
-include_once 'magic_quotes.php';
-
+require_once 'magic_quotes.php';
 require_once 'MySQLiFactory.php';
 
-/* Check MySQL configuration */
-if (!MySQLiFactory::configIsReadable()) {
-	require_once 'SetupProcessor.php';
-	$processor = new SetupProcessor();
-	$tmpl = new Template();
-	$tmpl->setTemplate('html.tpl');
-	$content = $processor->processParams($_GET, $_POST);
-    $tmpl->assign('content', $content);
-    echo $tmpl->render();
-	exit;
-}
+class Smail {
 
-/*
-if (sizeof($_GET) == 0) {
-	readfile('start.html');
-	exit;
-}
-
-if (isset($_GET['action'])) {
-	echo $_GET['action'];
-	exit;
-}
-
-if (isset($_GET['group'])) {
-	echo 'Group: ' . $_GET['group'] . '<br />';
-	if (isset($_GET['action'])) {
-		echo 'Action: ' . $_GET['action'];
+	public static function main() {
+		self::checkMySqlConfig();
 	}
-	if (isset($_GET['message'])) {
-		echo 'Message: ' . $_GET['message'];
-	}
-	exit;
-}
-*/
 
+	private static function checkMySqlConfig() {
+		if (!MySQLiFactory::configIsReadable()) {
+			require_once 'SetupProcessor.php';
+			$processor = new SetupProcessor();
+			$tmpl = new Template();
+			$tmpl->setTemplate('html.tpl');
+			$content = $processor->processParams($_GET, $_POST);
+			$tmpl->assign('content', $content);
+			echo $tmpl->render();
+			exit;
+		}
+	}
+
+}
+
+Smail::main();
+
+/* --------------------------- procedural style ----------------------------- */
 
 require_once 'SmailSmarty.php';
 require_once 'AccountManager.php';
 
-$link = mysql_connect('localhost', 'smail', 'smail');
-mysql_query('USE smail');
-
 session_start();
-
-define('HTTP_SERVER', 'http://'.$_SERVER['SERVER_NAME']);
-require_once 'WEBDIR.php';
 
 $params = array();
 
@@ -65,8 +47,6 @@ foreach($_GET as $key => $value) {
 foreach($_POST as $key => $value) {
     $params[$key] = $value;
 }
-
-//var_dump($params);
 
 switch($params['url']) {
     case 'Login':
