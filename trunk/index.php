@@ -11,16 +11,14 @@ require_once 'MySQLiFactory.php';
 
 /* Check MySQL configuration */
 if (!MySQLiFactory::configIsReadable()) {
-	require_once 'Setup.php';
-	$setup = new Setup();
-	if (isset($_POST['host'])
-	 && isset($_POST['user'])
-	 && isset($_POST['passwd'])
-	 && isset($_POST['dbname'])) {
-	 	$setup->save($_POST['host'], $_POST['user'], $_POST['passwd'], $_POST['dbname']);
-	 }
-	 echo $setup->output();
-	 exit;
+	require_once 'SetupProcessor.php';
+	$processor = new SetupProcessor();
+	$tmpl = new Template();
+	$tmpl->setTemplate('html.tpl');
+	$content = $processor->processParams($_GET, $_POST);
+    $tmpl->assign('content', $content);
+    echo $tmpl->render();
+	exit;
 }
 
 /*
@@ -44,8 +42,8 @@ if (isset($_GET['group'])) {
 	}
 	exit;
 }
-
 */
+
 
 require_once 'SmailSmarty.php';
 require_once 'AccountManager.php';
