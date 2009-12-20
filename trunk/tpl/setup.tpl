@@ -11,20 +11,20 @@
         <h1>Smail</h1>
         <p>Willkommen!</p>
         
+        <h2>MySQL-Setup:</h2>
         <form action="./" method="post">
-            <h2>MySQL-Setup:</h2>
             
-            <label>Host:</label>
-            <input type="text" name="host" value="localhost" />
+            <label for="host">Host:</label>
+            <input id="host" type="text" name="host" value="localhost" />
             
-            <label>Benutzer:</label>
-            <input type="text" name="user" value="smail" />
+            <label for="user">Benutzer:</label>
+            <input id="user" type="text" name="user" value="smail" />
             
-            <label>Passwort:</label>
-            <input type="password" name="passwd" value="" />
+            <label for="passwd">Passwort:</label>
+            <input id="passwd" type="password" name="passwd" value="" />
             
-            <label>Datenbank:</label>
-            <input type="text" name="dbname" value="smail" />
+            <label for="dbname">Datenbank:</label>
+            <input id="dbname" type="text" name="dbname" value="smail" />
             
             <input type="submit" value="Speichern" />
         </form>
