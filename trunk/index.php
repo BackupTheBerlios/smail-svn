@@ -15,7 +15,7 @@ if (!MySQLiFactory::configIsReadable()) {
 	$setup = new Setup();
 	if (isset($_POST['host'])
 	 && isset($_POST['user'])
-	 && isset($_POST['passwd']) 
+	 && isset($_POST['passwd'])
 	 && isset($_POST['dbname'])) {
 	 	$setup->save($_POST['host'], $_POST['user'], $_POST['passwd'], $_POST['dbname']);
 	 }
