@@ -1,9 +1,11 @@
 RewriteEngine on
-RewriteRule ^Welcome/$			?manager=Account
-RewriteRule ^Login$				?manager=Account
-RewriteRule ^Login/$			?manager=Account
-RewriteRule ^Groups/$			?manager=Account
-RewriteRule ^Group/$			?manager=Group
-RewriteRule ^Group/([^/]+)/$	?manager=Group&id=$1
+RewriteRule ^Welcome/$							?manager=Account
+RewriteRule ^Login$								?manager=Account
+RewriteRule ^Login/$							?manager=Account
+RewriteRule ^Groups/$							?manager=Account
+RewriteRule ^Group/$							?manager=Group
+RewriteRule ^Group/([^/]+)/$					?manager=Group&name=$1
+RewriteRule ^Group/([^/]+)/Message/([0-9]+)/$	?manager=Group&name=$1&message=$2
+RewriteRule ^Group/([^/]+)/Message/([0-9]+)/$	?manager=Group&name=$1&message=$2
 
 
